@@ -5,6 +5,7 @@
  * All configuration options: https://remotion.dev/docs/config
  */
 
+import path from "node:path";
 import { Config } from "@remotion/cli/config";
 import { enableTailwind } from "@remotion/tailwind-v4";
 
@@ -14,6 +15,15 @@ Config.setOverwriteOutput(true);
 Config.setDefaultPremountInSeconds(2);
 
 Config.overrideBundlerConfig((currentConfiguration) => {
-  return enableTailwind(currentConfiguration);
+  const config = enableTailwind(currentConfiguration);
+  return {
+    ...config,
+    resolve: {
+      ...config.resolve,
+      alias: {
+        ...(config.resolve?.alias ?? {}),
+        "@": path.resolve(".", "src"),
+      },
+    },
+  };
 });
-
